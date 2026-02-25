@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { DetalleFacturasService } from './detalle-facturas.service';
 
 @Controller('detalle-facturas')
@@ -18,5 +18,15 @@ export class DetalleFacturasController {
   @Post()
   create(@Body() dto: any) {
     return this.detalleFacturasService.create(dto);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() dto: any) {
+    return this.detalleFacturasService.update(+id, dto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.detalleFacturasService.remove(+id);
   }
 }
