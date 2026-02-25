@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 
 @Controller('usuarios')
@@ -18,5 +18,15 @@ export class UsuariosController {
   @Post()
   create(@Body() dto: any) {
     return this.usuariosService.create(dto);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() dto: any) {
+    return this.usuariosService.update(+id, dto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usuariosService.remove(+id);
   }
 }
