@@ -11,6 +11,8 @@ datasource db {
 model Usuario {
   id             Int       @id @default(autoincrement())
   disponible     Boolean   @default(true)
+  email          String    @unique
+  password       String
   fechaNacimiento DateTime
   dni            String    @unique
   nombreCompleto String
