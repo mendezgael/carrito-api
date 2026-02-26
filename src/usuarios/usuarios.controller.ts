@@ -7,6 +7,7 @@ import { RegisterDto, LoginDto } from './dto';
 
 @ApiTags('Usuarios')
 @ApiBearerAuth()
+@UseGuards(JwtGuard)
 @Controller('usuarios')
 export class UsuariosController {
   constructor(
