@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { DetalleFacturasService } from './detalle-facturas.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtGuard } from '../auth/jwt.guard';
 
 @ApiTags  ('detalle-facturas')
 @ApiBearerAuth()
+@UseGuards(JwtGuard)
 @Controller('detalle-facturas')
 export class DetalleFacturasController {
   constructor(private readonly detalleFacturasService: DetalleFacturasService) {}
