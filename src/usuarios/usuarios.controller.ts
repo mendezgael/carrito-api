@@ -2,8 +2,11 @@ import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nes
 import { UsuariosService } from './usuarios.service';
 import { AuthService } from '../auth/auth.service';
 import { JwtGuard } from '../auth/jwt.guard';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { RegisterDto, LoginDto } from './dto';
 
+@ApiTags('Usuarios')
+@ApiBearerAuth()
 @Controller('usuarios')
 export class UsuariosController {
   constructor(
