@@ -1,6 +1,9 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { DetalleFacturasService } from './detalle-facturas.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags  ('detalle-facturas')
+@ApiBearerAuth()
 @Controller('detalle-facturas')
 export class DetalleFacturasController {
   constructor(private readonly detalleFacturasService: DetalleFacturasService) {}
