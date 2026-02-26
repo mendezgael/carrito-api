@@ -11,26 +11,6 @@ export class UsuariosController {
     private readonly authService: AuthService,
   ) {}
 
-  @Post('register')
-  register(@Body() dto: RegisterDto) {
-    const result = this.usuariosService.register(dto);
-    if (result.error) {
-      return result;
-    }
-    return result;
-  }
-
-  @Post('login')
-  login(@Body() dto: LoginDto) {
-    const result = this.usuariosService.login(dto);
-    if (result.error) {
-      return result;
-    }
-    // Generar JWT token
-    const token = this.authService.generateToken(result.user.id, result.user.email);
-    return { user: result.user, ...token };
-  }
-
   @Get()
   @UseGuards(JwtGuard)
   findAll() {
