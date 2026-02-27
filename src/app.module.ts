@@ -6,13 +6,15 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { ProductosModule } from './productos/productos.module';
 import { FacturasModule } from './facturas/facturas.module';
 import { DetalleFacturasModule } from './detalle-facturas/detalle-facturas.module';
+import { PrismaModule } from 'prisma/prisma.module';
 
 @Module({
   imports: [UsuariosModule,
             AuthModule,
             ProductosModule,
             FacturasModule,
-            DetalleFacturasModule],
+            DetalleFacturasModule,
+            PrismaModule],
   controllers: [AppController],
   providers: [AppService],
 })
