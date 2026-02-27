@@ -1,86 +1,108 @@
 import { Injectable } from '@nestjs/common';
 import { RegisterDto, LoginDto } from './dto';
+import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class UsuariosService {
-  private readonly items: any[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    // Solo usuarios disponibles
-    return this.items.filter((i) => i.disponible !== false);
+  async findAll() {
+    return this.prisma.usuario.findMany({
+      where: { disponible: true },
+    });
   }
 
-  findOne(id: number) {
-    return this.items.find((i) => i.id === id);
+  async findOne(id: number) {
+    return this.prisma.usuario.findUnique({
+      where: { id },
+    });
   }
 
-  findByEmail(email: string) {
-    return this.items.find((i) => i.email === email && i.disponible !== false);
+  async findByEmail(email: string) {
+    return this.prisma.usuario.findFirst({
+      where: {
+        email,
+        disponible: true,
+      },
+    });
   }
 
-  create(dto: any) {
-    const id = this.items.length + 1;
-    const item = { id, disponible: true, ...dto };
-    this.items.push(item);
-    return item;
+  async create(dto: any) {
+    return this.prisma.usuario.create({
+      data: {
+        ...dto,
+      },
+    });
   }
 
-  update(id: number, dto: any) {
-    const idx = this.items.findIndex((i) => i.id === id);
-    if (idx === -1) return null;
-    const updated = { ...this.items[idx], ...dto, id };
-    this.items[idx] = updated;
-    return updated;
+  async update(id: number, dto: any) {
+    try {
+      return await this.prisma.usuario.update({
+        where: { id },
+        data: dto,
+      });
+    } catch {
+      return null;
+    }
   }
 
-  // Borrado lógico: setear `disponible` a false
-  remove(id: number) {
-    const idx = this.items.findIndex((i) => i.id === id);
-    if (idx === -1) return null;
-    this.items[idx].disponible = false;
-    return this.items[idx];
+  // Borrado lógico
+  async remove(id: number) {
+    try {
+      return await this.prisma.usuario.update({
+        where: { id },
+        data: { disponible: false },
+      });
+    } catch {
+      return null;
+    }
   }
 
-  // Autenticación: Register
-  register(dto: RegisterDto) {
-    // Verificar si el email ya existe
-    if (this.findByEmail(dto.email)) {
+  // REGISTER
+  /* async register(dto: RegisterDto) {
+    const existingUser = await this.prisma.usuario.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (existingUser) {
       return { error: 'El email ya está registrado' };
     }
 
-    // Crear nuevo usuario (sin hashear, texto plano como solicitaste)
-    const id = this.items.length + 1;
-    const newUser = {
-      id,
-      disponible: true,
-      email: dto.email,
-      password: dto.password, // Sin hashear
-      nombreCompleto: dto.nombreCompleto,
-      dni: dto.dni,
-      fechaNacimiento: dto.fechaNacimiento,
-      sexo: dto.sexo,
-      estadoCivil: dto.estadoCivil,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.items.push(newUser);
-    return { id: newUser.id, email: newUser.email, message: 'Usuario registrado exitosamente' };
-  }
+    const newUser = await this.prisma.usuario.create({
+      data: {
+        email: dto.email,
+        password: dto.password,
+        nombreCompleto: dto.nombreCompleto,
+        dni: dto.dni,
+        fechaNacimiento: new Date(dto.fechaNacimiento),
+        sexo: dto.sexo,
+        estadoCivil: dto.estadoCivil,
+      },
+    });
 
-  // Autenticación: Login
-  login(dto: LoginDto) {
-    const user = this.findByEmail(dto.email);
-    if (!user) {
+    return {
+      id: newUser.id,
+      email: newUser.email,
+      message: 'Usuario registrado exitosamente',
+    };
+  } */
+
+  // LOGIN
+  /* async login(dto: LoginDto) {
+    const user = await this.prisma.usuario.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (!user || user.disponible === false) {
       return { error: 'Usuario no encontrado' };
     }
 
-    // Validar contraseña (sin hashear, comparación directa)
     if (user.password !== dto.password) {
       return { error: 'Contraseña incorrecta' };
     }
 
-    // Return user sin password
     const { password, ...userWithoutPassword } = user;
-    return { user: userWithoutPassword, token: null }; // Token será generado por JWT service
-  }
+
+    return { user: userWithoutPassword };
+  } */
 }
